@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/container-interop/container-interop" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/fpdo/fluentpdo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/monolog/monolog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/nikic/fast-route" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/pimple/pimple" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/psr/container" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/psr/http-message" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/psr/log" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/slim/slim" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/slim/twig-view" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/twig/twig" vcs="Git" />
+  </component>
+</project>
