@@ -15,12 +15,19 @@ use Psr\Http\Message\ResponseInterface as Response;
 final class KonsumenController
 {
     protected $logger;
-    protected $cfgModel;
+    protected $konsumenModel;
 
-    public function __construct($logger,$cfgModel)
+    public function __construct($logger,$Model)
     {
         $this->logger = $logger;
-        $this->cfgs= $cfgModel;
+        $this->konsumenModel= $Model;
+    }
+
+
+    public function viewKonsumen (Request $request,Response $response, $args){
+        $phone = $args["phone"];
+        $data = $this->konsumenModel->viewKonsumen($phone);
+        return $response->withJson($data);
     }
 
     public function  getAllKonsumen (Request $request, Response $response, $args ){
@@ -28,7 +35,7 @@ final class KonsumenController
         $data=[];
         $this->logger->info("Action:Mendapatkan seluruh konsumen");
 
-        $data = $this->cfgs->getAllKonsumen();
+        $data = $this->konsumenModel->getAllKonsumen();
         return $response->withJson($data);
     }
 }

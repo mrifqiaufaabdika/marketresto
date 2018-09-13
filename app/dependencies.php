@@ -55,16 +55,22 @@ $container['cfgModel'] = function ($container) {
     return $cfgModel;
 };
 
-$container['cfgKonsumen'] = function ($container) {
+$container['Konsumen'] = function ($container) {
     $settings = $container->get('settings');
-    $cfgModel = new App\Model\Konsumen($container->get('pdo'));
-    return $cfgModel;
+    $Model = new App\Model\konsumenModel($container->get('pdo'));
+    return $Model;
 };
 
 $container['authModel'] = function ($container) {
     $settings = $container->get('settings');
     $cfgModel = new App\Model\AuthModel($container->get('pdo'));
     return $cfgModel;
+};
+
+$container['restorantModel'] = function ($container){
+    $setting = $container->get('settings') ;
+    $model = new App\Model\restorantModel($container->get('pdo'));
+    return $model;
 };
 
 // -----------------------------------------------------------------------------
@@ -87,12 +93,18 @@ $container['App\Controller\SystemController'] = function ($container) {
 
 $container['App\Controller\KonsumenController'] = function ($container) {
     $logger = $container->get('logger');
-    $cfgModel = $container->get('cfgKonsumen');
-    return new App\Controller\KonsumenController($logger, $cfgModel);
+    $Model = $container->get('Konsumen');
+    return new App\Controller\KonsumenController($logger, $Model);
 };
 
 $container['App\Controller\AuthController'] = function ($container) {
     $logger = $container->get('logger');
     $authModel = $container->get('authModel');
     return new App\Controller\AuthController($logger, $authModel);
+};
+
+$container['App\Controller\RestorantController'] = function ($container){
+    $logger = $container->get('logger');
+    $restorantModel = $container->get('restorantModel');
+    return new App\Controller\RestorantController($logger,$restorantModel);
 };

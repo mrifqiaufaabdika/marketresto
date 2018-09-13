@@ -26,24 +26,39 @@ final class AuthModel extends BaseModel
         if ($stmt->rowCount() > 0){ //kondisi telah ada pengguna
             $this->msg = ["value"=>"0", "message"=>"Oops! Nomor Telpon Genggam Sudah Terdaftar! "];
         }else {
-            $sql = "INSERT INTO `m_konsumen`(`konsumen_phone`, `konsumen_nama`, `konsumen_email`, `konsumen_credit_balance`, `konsumen_baru`, `blacklist`) VALUES (:konsumen_phone, :konsumen_nama, :konsumen_email, :konsumen_credit_balance, :konsumen_baru, :blacklist)";
-            $stmt = $this->db->prepare($sql);
+            $db = $this->db;
+            try{
 
-            $data = [
-                ":konsumen_phone" => $konsumen["konsumen_phone"],
-                ":konsumen_nama" => $konsumen["konsumen_nama"],
-                ":konsumen_email" => $konsumen["konsumen_email"],
-                ":konsumen_credit_balance" => 0,
-                ":konsumen_baru" => 1,
-                ":blacklist" => 0,
-            ];
+                $db->beginTransaction();
 
-            if ($stmt->execute($data)) {
+                $sql = "INSERT INTO `m_konsumen`(`konsumen_phone`, `konsumen_nama`, `konsumen_email`, `konsumen_credit_balance`, `konsumen_baru`, `blacklist`) VALUES (:konsumen_phone, :konsumen_nama, :konsumen_email, :konsumen_credit_balance, :konsumen_baru, :blacklist)";
+                $stmt = $this->db->prepare($sql);
 
+                $stmt->bindValue(':konsumen_phone',$konsumen['konsumen_phone']);
+                $stmt->bindValue(':konsumen_nama',$konsumen['konsumen_nama']);
+                $stmt->bindValue(':konsumen_email',$konsumen['konsumen_email']);
+                $stmt->bindValue(':konsumen_credit_balance',0);
+                $stmt->bindValue(':konsumen_baru',1);
+                $stmt->bindValue(':blacklist',0);
+
+                $stmt->execute();
+
+                $sql2 ="INSERT INTO `tr_pengguna`(`phone`,`token`, `tipe`) VALUES (:konsumen_phone,:token,:tipe)";
+                $stmt = $this->db->prepare($sql2);
+                $stmt->bindValue(':konsumen_phone',$konsumen['konsumen_phone']);
+                $stmt->bindValue(':token',$konsumen['token']);
+                $stmt->bindValue(':tipe',$konsumen['tipe']);
+                $stmt->execute();
+                $this->db->commit();
                 $this->msg = ["value"=>"1", "message"=>"Sukses Mendaftar"];
-            } else {
+
+
+            }catch (PDOException $e){
+                $db->rollback();
                 $this->msg = ["value"=>"0", "message"=>"Oops! Coba Lagi ! "];
+
             }
+
         }
         return $this->msg;
     }
@@ -51,7 +66,9 @@ final class AuthModel extends BaseModel
     //method untuk melakukan validasi pengguna
     public function checkPhoneNumber($phone =null){
         $phone =$phone ;
-        $sql = "SELECT konsumen_phone FROM m_konsumen WHERE konsumen_phone=:phone";
+
+       // $sql = "SELECT * from `m_konsumen` WHERE konsumen_phone =:phone";
+        $sql = "SELECT  a.*,b.* FROM `m_konsumen`a,tr_pengguna b WHERE a.konsumen_phone =:phone AND b.phone = a.konsumen_phone AND b.tipe = 'konsumen'";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([":phone"=> $phone]);
         $result = $stmt->fetch();
@@ -59,7 +76,7 @@ final class AuthModel extends BaseModel
         if ($stmt->rowCount() == 1){
             $this->msg=["value"=>"1", "message"=>"success"];
         }else{
-            $this->msg=["value"=>"0", "message"=>"Oops! Nomor Telpon Genggam Belum Terdaftar! "];
+            $this->msg=["value"=>"0", "message"=>"Oops! Nomor telepon tidak terdaftar "];
         }
         return $this->msg;
     }
