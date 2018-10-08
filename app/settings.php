@@ -3,6 +3,7 @@ return [
     'settings' => [
         // comment this line when deploy to production environment
         'displayErrorDetails' => APP_DEBUG_MODE,
+        'upload_directory' => __DIR__ .'/../public/upload',
         
         // View settings        
         'view' => [

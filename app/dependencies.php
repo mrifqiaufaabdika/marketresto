@@ -3,6 +3,8 @@
 
 $container = $app->getContainer();
 
+$container['upload_directory'] = __DIR__.'/../public/upload';
+
 // -----------------------------------------------------------------------------
 // Service providers
 // -----------------------------------------------------------------------------
@@ -11,7 +13,6 @@ $container = $app->getContainer();
 $container['view'] = function ($container) {
     $settings = $container->get('settings');
     $view = new \Slim\Views\Twig($settings['view']['template_path'], $settings['view']['twig']);
-
     // Add extensions
     $view->addExtension(new Slim\Views\TwigExtension($container->get('router'), $container->get('request')->getUri()));
     $view->addExtension(new Twig_Extension_Debug());
@@ -68,8 +69,15 @@ $container['authModel'] = function ($container) {
 };
 
 $container['restorantModel'] = function ($container){
+//    $setting = $container->get('settings')['upload_directory'] ;
+    $upload_directory = $container->get('upload_directory');
+    $model = new App\Model\restorantModel($container->get('pdo'),$upload_directory);
+    return $model;
+};
+
+$container['orderModel'] = function ($container){
     $setting = $container->get('settings') ;
-    $model = new App\Model\restorantModel($container->get('pdo'));
+    $model = new App\Model\orderModel($container->get('pdo'));
     return $model;
 };
 
@@ -107,4 +115,10 @@ $container['App\Controller\RestorantController'] = function ($container){
     $logger = $container->get('logger');
     $restorantModel = $container->get('restorantModel');
     return new App\Controller\RestorantController($logger,$restorantModel);
+};
+
+$container['App\Controller\orderController'] = function ($container){
+    $logger = $container->get('logger');
+    $orderModel = $container->get('orderModel');
+    return new App\Controller\orderController($logger,$orderModel);
 };

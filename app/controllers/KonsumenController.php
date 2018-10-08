@@ -26,8 +26,12 @@ final class KonsumenController
 
     public function viewKonsumen (Request $request,Response $response, $args){
         $phone = $args["phone"];
+
+
         $data = $this->konsumenModel->viewKonsumen($phone);
         return $response->withJson($data);
+
+
     }
 
     public function  getAllKonsumen (Request $request, Response $response, $args ){
